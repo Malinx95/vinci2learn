@@ -31,6 +31,22 @@ export async function getUser(email: string) {
 	}
 }
 
+export async function getUserWithLessons(email: string) {
+	try {
+		const user = await prisma.user.findUnique({
+			where: {
+				email,
+			},
+			include: {
+				lessons: true,
+			},
+		});
+		return user;
+	} catch (error) {
+		console.error("Error getting user with lessons", error);
+	}
+}
+
 export async function listUsers() {
 	try {
 		const users = await prisma.user.findMany();
