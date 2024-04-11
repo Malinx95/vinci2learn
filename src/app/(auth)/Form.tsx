@@ -6,11 +6,15 @@ import Logo from "../../../public/logo.jpg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signIn, signUp, useUserSession } from "@/lib/firebase/auth";
+import { signIn, signUp } from "@/lib/firebase/auth";
+import { useUserSession } from "@/lib/firebase/hooks/auth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Form({ mode = "login" }: { mode: "login" | "signup" }) {
+	const router = useRouter();
+
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const user = useUserSession();
@@ -61,13 +65,14 @@ export default function Form({ mode = "login" }: { mode: "login" | "signup" }) {
 						<Button
 							type="submit"
 							className="w-full"
-							onClick={() => {
+							onClick={async () => {
 								if (mode === "login") {
-									signIn(email, password);
+									await signIn(email, password);
 								}
 								if (mode === "signup") {
-									signUp(email, password);
+									await signUp(email, password);
 								}
+								router.push("/courses");
 							}}
 						>
 							{mode === "login" ? "Login" : "Sign up"}

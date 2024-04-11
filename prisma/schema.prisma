@@ -9,3 +9,31 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model Course {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  lessons     Lesson[]
+  users       User[]   @relation("EnrolledUsers")
+  creatorId   Int
+  creator     User     @relation("CourseCreator", fields: [creatorId], references: [id])
+}
+
+model Lesson {
+  id          Int    @id @default(autoincrement())
+  title       String
+  description String
+  courseId    Int
+  course      Course @relation(fields: [courseId], references: [id])
+  exp         Int
+  users       User[]
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
+  courses        Course[] @relation("EnrolledUsers")
+  lessons        Lesson[]
+  coursesCreated Course[] @relation("CourseCreator")
+}
